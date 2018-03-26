@@ -1,0 +1,17 @@
+<v-ons-page>
+    <navbar msg="Sign in"></navbar>
+
+    <div style="text-align: center; margin-top: 30px;">
+        <p>
+            <v-ons-input v-model="emailAddress" modifier="underbar" type="email" placeholder="Email address" float></v-ons-input>
+        </p>
+        <p>
+            <v-ons-input v-model="password" modifier="underbar" type="password" placeholder="Password" float></v-ons-input>
+        </p>
+        <p style="margin-top: 30px;">
+            <v-ons-button @click="signIn()">Sign in</v-ons-button>
+        </p>
+
+        <loading-indicator :is-loading="isLoading"></loading-indicator>
+    </div>
+</v-ons-page>
