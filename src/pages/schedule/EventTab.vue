@@ -13,8 +13,6 @@
 </template>
 
 <script>
-    import EventPage from './EventPage';
-
     export default {
         props: {
             events: Array,

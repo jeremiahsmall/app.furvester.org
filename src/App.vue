@@ -34,6 +34,11 @@
                         icon: 'fa-map'
                     },
                     {
+                        routeName: 'team',
+                        label: 'Team',
+                        icon: 'fa-users'
+                    },
+                    {
                         routeName: 'achievements',
                         label: 'Achievements',
                         icon: 'fa-trophy'

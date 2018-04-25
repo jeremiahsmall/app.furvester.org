@@ -1,4 +1,3 @@
-<style lang="css" scoped src="./AchievementsPage.css"></style>
 <template src="./AchievementsPage.html">
     <div></div>
 </template>

@@ -5,7 +5,7 @@ let getDb = () => {
             resolve(db);
         }
 
-        let dbOpenRequest = window.indexedDB.open('app', 1);
+        let dbOpenRequest = window.indexedDB.open('app', 2);
 
         dbOpenRequest.addEventListener('error', () => {
             reject();
@@ -27,6 +27,13 @@ let getDb = () => {
 
                 let dataObjectStore = db.createObjectStore('data', {keyPath: 'key'});
                 dataObjectStore.createIndex('value', 'value', {unique: false});
+            }
+
+            if (event.oldVersion < 2) {
+                let teamObjectStore = db.createObjectStore('team', {keyPath: 'id'});
+                teamObjectStore.createIndex('nickname', 'nickname', {unique: false});
+                teamObjectStore.createIndex('departments', 'departments', {unique: false});
+                teamObjectStore.createIndex('badge', 'badge', {unique: false});
             }
         });
 

@@ -2,30 +2,30 @@ import axios from 'axios';
 import Config from '../config/Config';
 import Db from '../db/Db.js';
 
-const CACHE_TIMEOUT = 60 * 60;
+const CACHE_TIMEOUT = 60 * 60 * 24;
 
 let loadFromApi = (resolve, reject) => {
-    return axios.get(Config.API_URL + '/events').then((response) => {
-        Db.getTransaction(['event', 'data'], 'readwrite').then((transaction) => {
-            let eventObjectStore = transaction.objectStore('event', 'readonly');
+    return axios.get(Config.API_URL + '/team').then((response) => {
+        Db.getTransaction(['team', 'data'], 'readwrite').then((transaction) => {
+            let teamObjectStore = transaction.objectStore('team', 'readonly');
             let dataObjectStore = transaction.objectStore('data', 'readonly');
 
-            eventObjectStore.clear();
+            teamObjectStore.clear();
 
-            response.data.events.forEach((event) => {
-                eventObjectStore.add(event);
+            response.data.team.forEach((member) => {
+                teamObjectStore.add(member);
             });
 
             dataObjectStore.put({
-                key: 'lastEventUpdate',
+                key: 'lastTeamUpdate',
                 value: Math.round((new Date()).getTime() / 1000),
             });
 
             transaction.addEventListener('complete', () => {
-                resolve(response.data.events);
+                resolve(response.data.team);
             });
         }).catch(() => {
-            resolve(response.data.events);
+            resolve(response.data.team);
         });
     }).catch(() => {
         reject();
@@ -33,25 +33,23 @@ let loadFromApi = (resolve, reject) => {
 };
 
 let loadFromDb = (resolve, reject) => {
-    Db.getTransaction('event', 'readonly').then((transaction) => {
-        let eventObjectStore = transaction.objectStore('event');
-        let events = [];
+    Db.getTransaction('team', 'readonly').then((transaction) => {
+        let teamObjectStore = transaction.objectStore('team');
+        let team = [];
 
-        eventObjectStore.openCursor().addEventListener('success', (event) => {
+        teamObjectStore.openCursor().addEventListener('success', (event) => {
             let cursor = event.target.result;
 
             if (! cursor) {
-                resolve(events);
+                resolve(team);
                 return;
             }
 
-            events.push({
+            team.push({
                 id: cursor.value.id,
-                title: cursor.value.title,
-                startsAt: cursor.value.startsAt,
-                endsAt: cursor.value.endsAt,
-                description: cursor.value.description,
-                room: cursor.value.room,
+                nickname: cursor.value.nickname,
+                departments: cursor.value.departments,
+                badge: cursor.value.badge,
             });
             cursor.continue();
         });
@@ -61,11 +59,11 @@ let loadFromDb = (resolve, reject) => {
 };
 
 export default {
-    getEvents() {
+    getTeam() {
         return new Promise((resolve, reject) => {
             Db.getTransaction('data', 'readonly').then((transaction) => {
                 let dataObjectStore = transaction.objectStore('data');
-                let lastUpdateRequest = dataObjectStore.get('lastEventUpdate');
+                let lastUpdateRequest = dataObjectStore.get('lastTeamUpdate');
                 lastUpdateRequest.addEventListener('success', (event) => {
                     if (event.target.result === undefined) {
                         loadFromApi(resolve, reject);

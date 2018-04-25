@@ -1,0 +1,38 @@
+<template src="./TeamPage.html">
+    <div></div>
+</template>
+
+<script>
+    import Navbar from '../../components/navbar/Navbar';
+    import LoadingIndicator from '../../components/loading-indicator/LoadingIndicator';
+    import TeamService from '../../services/TeamService';
+
+    export default {
+        name: 'team-page',
+        components: {
+            Navbar,
+            LoadingIndicator,
+        },
+        data() {
+            return {
+                isLoading: false,
+                team: [],
+            };
+        },
+        mounted() {
+            this.isLoading = true;
+
+            TeamService.getTeam().then((team) => {
+                team.sort((a, b) => {
+                    return a.nickname.localeCompare(b.nickname);
+                });
+
+                this.team = team;
+                this.isLoading = false;
+            }).catch(() => {
+                this.$ons.notification.alert('Could not load team. Please check your internet connection.');
+                this.isLoading = false;
+            });
+        },
+    };
+</script>
