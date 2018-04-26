@@ -36,6 +36,7 @@ const webpackConfig = merge(baseWebpackConfig, {
         // http://vuejs.github.io/vue-loader/en/workflow/production.html
         new webpack.DefinePlugin({
             'process.env': env,
+            '__VERSION__': JSON.stringify(require('../package.json').version),
             '__API_URL__': JSON.stringify(apiUrl),
             '__CLIENT_ID__': JSON.stringify(clientId),
         }),
@@ -107,7 +108,7 @@ const webpackConfig = merge(baseWebpackConfig, {
         new SWPrecacheWebpackPlugin({
             cacheId: 'app.furvester.org',
             filename: 'service-worker.js',
-            staticFileGlobs: ['dist/**/*.{js,html,css}'],
+            staticFileGlobs: ['dist/**/*.{js,html,css,png}'],
             minify: true,
             stripPrefix: 'dist/'
         })

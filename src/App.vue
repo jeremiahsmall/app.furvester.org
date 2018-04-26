@@ -22,27 +22,52 @@
         },
         data() {
             return {
-                pages: [
+                categories: [
                     {
-                        routeName: 'schedule',
-                        label: 'Schedule',
-                        icon: 'fa-calendar'
+                        label: null,
+                        pages: [
+                            {
+                                target: 'schedule',
+                                label: 'Schedule',
+                                icon: 'fa-calendar'
+                            },
+                            {
+                                target: 'map',
+                                label: 'Map',
+                                icon: 'fa-map'
+                            },
+                            {
+                                target: 'team',
+                                label: 'Team',
+                                icon: 'fa-users'
+                            },
+                            {
+                                target: 'about',
+                                label: 'About',
+                                icon: 'fa-info-circle'
+                            },
+                            {
+                                target: 'achievements',
+                                label: 'Achievements',
+                                icon: 'fa-trophy'
+                            },
+                        ],
                     },
                     {
-                        routeName: 'map',
-                        label: 'Map',
-                        icon: 'fa-map'
-                    },
-                    {
-                        routeName: 'team',
-                        label: 'Team',
-                        icon: 'fa-users'
-                    },
-                    {
-                        routeName: 'achievements',
-                        label: 'Achievements',
-                        icon: 'fa-trophy'
-                    },
+                        label: 'Links',
+                        pages: [
+                            {
+                                target: 'https://furvester.org',
+                                label: 'Website',
+                                icon: 'fa-link'
+                            },
+                            {
+                                target: 'https://twitter.com/furvester',
+                                label: 'Twitter',
+                                icon: 'fa-twitter'
+                            },
+                        ],
+                    }
                 ]
             };
         },
@@ -50,8 +75,13 @@
             HomePage,
         },
         methods: {
-            goTo(routeName) {
-                this.$router.push({name: routeName});
+            goTo(target) {
+                if (target.startsWith('http://') || target.startsWith('https://')) {
+                    window.open(target);
+                } else {
+                    this.$router.push({name: target});
+                }
+
                 store.commit('toggleMenu', false);
             },
         },

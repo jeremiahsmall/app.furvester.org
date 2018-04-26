@@ -7,12 +7,18 @@
                 </div>
 
                 <v-ons-list>
-                    <v-ons-list-item modifier="chevron" v-for="page in pages" @click="goTo(page.routeName)" :key="page.routeName">
-                        <div class="left">
-                            <v-ons-icon fixed-width :icon="page.icon"></v-ons-icon>
-                        </div>
-                        <div class="center">{{ page.label }}</div>
-                    </v-ons-list-item>
+                    <template v-for="category in categories">
+                        <template v-if="null !== category.label">
+                            <v-ons-list-header>{{ category.label }}</v-ons-list-header>
+                        </template>
+
+                        <v-ons-list-item modifier="chevron" v-for="page in category.pages" @click="goTo(page.target)" :key="page.target">
+                            <div class="left">
+                                <v-ons-icon fixed-width :icon="page.icon"></v-ons-icon>
+                            </div>
+                            <div class="center">{{ page.label }}</div>
+                        </v-ons-list-item>
+                    </template>
                 </v-ons-list>
             </v-ons-page>
         </v-ons-splitter-side>
