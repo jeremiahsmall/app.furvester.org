@@ -1,3 +1,2 @@
 app.furvester.org:
-  stage: production
   deploy_path: /path/for/app.furvester.org
