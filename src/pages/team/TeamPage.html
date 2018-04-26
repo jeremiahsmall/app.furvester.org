@@ -7,7 +7,7 @@
         <v-ons-list-item v-for="member in team" :key="member.nickname">
             <div class="left">
                 <template v-if="null !== member.badge">
-                    <img class="list-item__thumbnail" v-bind:src="'data:image/jpeg;base64,' + member.badge">
+                    <img class="list-item__thumbnail b-lazy" src="../../assets/no-badge.png" v-bind:data-src="member.badge">
                 </template>
                 <template v-else>
                     <img class="list-item__thumbnail" src="../../assets/no-badge.png">

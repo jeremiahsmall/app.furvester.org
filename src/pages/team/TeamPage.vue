@@ -6,6 +6,7 @@
     import Navbar from '../../components/navbar/Navbar';
     import LoadingIndicator from '../../components/loading-indicator/LoadingIndicator';
     import TeamService from '../../services/TeamService';
+    import Blazy from 'blazy';
 
     export default {
         name: 'team-page',
@@ -29,6 +30,10 @@
 
                 this.team = team;
                 this.isLoading = false;
+
+                new Blazy({
+                    container: '.page__content',
+                });
             }).catch(() => {
                 this.$ons.notification.alert('Could not load team. Please check your internet connection.');
                 this.isLoading = false;
