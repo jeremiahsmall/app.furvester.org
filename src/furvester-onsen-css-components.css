@@ -1,0 +1,8 @@
+@import url('../node_modules/onsenui/css-components-src/src/license.css');
+@import url('./furvester-theme.css');
+@import url('../node_modules/onsenui/css-components-src/src/components/index.css');
+@import url('../node_modules/onsenui/css-components-src/src/iphonex-support/index.css');
+
+button::-moz-focus-inner {
+    border: 0;
+}

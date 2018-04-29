@@ -1,6 +1,6 @@
 import 'font-awesome/css/font-awesome.css';
 import 'onsenui/css/onsenui-core.css';
-import 'onsenui/css/onsen-css-components.css';
+import './furvester-onsen-css-components.css';
 
 import Vue from 'vue';
 import VueOnsen from 'vue-onsenui/esm';
@@ -27,19 +27,7 @@ const router = new VueRouter({
     base: window.location.href,
     routes,
 });
-/*
-Vue.mixin({
-    beforeCreate() {
-        const options = this.$options;
 
-        if (options.moment) {
-            this.$moment = options.moment;
-        } else if (options.parent && options.parent.$moment) {
-            this.$moment = options.parent.$moment;
-        }
-    },
-});
-*/
 new Vue({
     components: {
         App,
