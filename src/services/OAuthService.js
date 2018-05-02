@@ -98,7 +98,7 @@ class OAuthService
     _performRefresh() {
         return new Promise((resolve, reject) => {
             this._getRefreshToken().then((refreshToken) => {
-                axios.post(Config.API_URL, qs.stringify({
+                axios.post(Config.API_URL + '/oauth', qs.stringify({
                     'grant_type': 'refresh_token',
                     'client_id': Config.CLIENT_ID,
                     'refresh_token': refreshToken,
