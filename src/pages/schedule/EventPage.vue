@@ -6,7 +6,7 @@
             </div>
             <div class="right" v-show="shareSupported && event">
                 <v-ons-toolbar-button @click="share()">
-                    <v-ons-icon icon="fa-share-alt"></v-ons-icon>
+                    <v-ons-icon icon="fa-share"></v-ons-icon>
                 </v-ons-toolbar-button>
             </div>
         </v-ons-toolbar>
@@ -63,7 +63,7 @@
 
                 navigator.share({
                     title: this.event.title,
-                    text: this.event.description,
+                    text: 'Check out the "' + this.event.description + '" event on Furvester',
                     url: url,
                 });
             },
