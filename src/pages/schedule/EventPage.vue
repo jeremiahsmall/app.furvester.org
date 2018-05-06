@@ -63,7 +63,7 @@
 
                 navigator.share({
                     title: this.event.title,
-                    text: 'Check out the "' + this.event.description + '" event on Furvester',
+                    text: 'Check out the "' + this.event.title + '" event on Furvester',
                     url: url,
                 });
             },
