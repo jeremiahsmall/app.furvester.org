@@ -21,4 +21,5 @@ export default [
     {name: 'about', path: '/about', component: AboutPage},
     {name: 'achievements', path: '/achievements', component: AchievementsPage},
     {name: 'sign-in', path: '/sign-in', component: SignInPage},
+    {path: '*', redirect: {name: 'home'}},
 ];

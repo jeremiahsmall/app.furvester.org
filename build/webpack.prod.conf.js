@@ -109,10 +109,7 @@ const webpackConfig = merge(baseWebpackConfig, {
         new SWPrecacheWebpackPlugin({
             cacheId: 'app.furvester.org',
             filename: 'service-worker.js',
-            staticFileGlobs: [
-                'dist/index.html',
-                'dist/**/*.{js,html,css,png,svg,eto,woff2,ttf,woff}',
-            ],
+            staticFileGlobs: ['dist/**/*'],
             navigateFallback: '/index.html',
             minify: true,
             stripPrefix: 'dist/',
