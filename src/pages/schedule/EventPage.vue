@@ -4,6 +4,11 @@
             <div class="left">
                 <v-ons-back-button>Back</v-ons-back-button>
             </div>
+            <div class="right" v-if="shareSupported">
+                <v-ons-toolbar-button @click="share()">
+                    <v-ons-icon icon="fa-share-alt"></v-ons-icon>
+                </v-ons-toolbar-button>
+            </div>
         </v-ons-toolbar>
 
         <v-ons-card>
@@ -24,5 +29,22 @@
 <script>
     export default {
         name: 'event-page',
+        data() {
+            return {
+                shareSupported: !! navigator.share,
+            };
+        },
+        methods: {
+            share() {
+                let a = document.createElement('a');
+                a.href = '#' + this.$router.match({name: 'schedule', query: {event: this.event.id}}).fullPath;
+                let url = a.protocol + '//' + a.host + a.pathname + a.hash;
+
+                navigator.share({
+                    title: this.event.title,
+                    url: url,
+                });
+            },
+        },
     };
 </script>

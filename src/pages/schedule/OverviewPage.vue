@@ -25,6 +25,7 @@
                 events: {},
                 activeIndex: 0,
                 tabs: [],
+                showEventAfterLoad: null,
             };
         },
         mounted() {
@@ -83,6 +84,11 @@
                 this.events = indexedEvents;
                 this.isLoading = false;
                 this.showTabs = true;
+
+                if (this.showEventAfterLoad) {
+                    this.showEvent(this.showEventAfterLoad);
+                    this.showEventAfterLoad = null;
+                }
             }).catch(() => {
                 this.$ons.notification.alert('Could not load schedule. Please check your internet connection.');
                 this.isLoading = false;
@@ -90,6 +96,11 @@
         },
         created() {
             this.$on('event-clicked', (eventId) => {
+                this.showEvent(eventId);
+            });
+        },
+        methods: {
+            showEvent(eventId) {
                 if (! (eventId in eventMap)) {
                     return;
                 }
@@ -102,7 +113,7 @@
                         };
                     }
                 });
-            });
+            },
         },
     };
 </script>

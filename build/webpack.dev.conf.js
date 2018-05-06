@@ -10,7 +10,7 @@ const baseWebpackConfig = require('./webpack.base.conf');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin');
 
-const apiUrl = 'http://localhost:8000/api';
+const apiUrl = 'http://192.168.0.86:8000/api';
 const clientId = 'app.furvester.org';
 
 // add hot-reload related code to entry chunks
