@@ -20,7 +20,7 @@
                     <v-ons-list-item>When: {{event.startsAt | moment('ddd HH:mm')}} - {{event.endsAt | moment('HH:mm')}}</v-ons-list-item>
                     <v-ons-list-item>Where: {{event.room}}</v-ons-list-item>
                 </v-ons-list>
-                <p style="white-space: pre;">{{event.description}}</p>
+                <p style="white-space: pre-wrap;">{{event.description}}</p>
             </div>
         </v-ons-card>
     </v-ons-page>
