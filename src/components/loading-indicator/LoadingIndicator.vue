@@ -8,8 +8,6 @@
     <div v-if="isLoading" class="loading-wrapper">
         <ons-progress-circular indeterminate></ons-progress-circular>
     </div>
-    <div v-else>
-    </div>
 </template>
 
 <script>

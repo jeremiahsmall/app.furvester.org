@@ -24,7 +24,14 @@
         </v-ons-splitter-side>
 
         <v-ons-splitter-content>
-            <router-view></router-view>
+            <v-ons-navigator
+                :page-stack="pageStack"
+                :pop-page="goBack"
+                @prepush="transitionRunning()"
+                @prepop="transitionRunning()"
+                @postpush="transitionStopped()"
+                @postpop="transitionStopped()"
+            ></v-ons-navigator>
         </v-ons-splitter-content>
     </v-ons-splitter>
 </v-ons-page>

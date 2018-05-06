@@ -1,11 +1,10 @@
 <style lang="css" scoped src="./App.css"></style>
-<template src="./App.html">
-    <div></div>
-</template>
+<template src="./App.html"></template>
 
 <script>
-    import HomePage from './pages/home/HomePage';
     import store from './store';
+
+    let transitionRunning = false;
 
     export default {
         name: 'app',
@@ -22,6 +21,7 @@
         },
         data() {
             return {
+                pageStack: [],
                 categories: [
                     {
                         label: null,
@@ -71,18 +71,45 @@
                 ]
             };
         },
-        components: {
-            HomePage,
+        created() {
+            const mapRouteStack = route => this.pageStack = route.matched.map(m => m.components.default);
+
+            if ('event' === this.$route.name) {
+                let eventId = this.$route.params.eventId;
+                this.$router.replace({name: 'schedule'});
+                this.$router.push({name: 'event', params: {'eventId': eventId}});
+            }
+
+            mapRouteStack(this.$route);
+
+            this.$router.beforeEach((to, from, next) => {
+                if (transitionRunning) {
+                    next(false);
+                    return;
+                }
+
+                mapRouteStack(to);
+                next();
+            });
         },
         methods: {
             goTo(target) {
                 if (target.startsWith('http://') || target.startsWith('https://')) {
                     window.open(target);
                 } else {
-                    this.$router.push({name: target});
+                    this.$router.replace({name: target});
                 }
 
                 store.commit('toggleMenu', false);
+            },
+            transitionRunning() {
+                transitionRunning = true;
+            },
+            transitionStopped() {
+                transitionRunning = false;
+            },
+            goBack() {
+                this.$router.go(-1);
             },
         },
     };

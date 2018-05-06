@@ -23,8 +23,7 @@ Vue.use(VueMoment, {
 });
 
 const router = new VueRouter({
-    mode: 'hash',
-    base: window.location.href,
+    mode: 'history',
     routes,
 });
 

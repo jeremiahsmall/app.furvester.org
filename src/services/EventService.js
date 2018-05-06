@@ -32,60 +32,82 @@ let loadFromApi = (resolve, reject) => {
     });
 };
 
-let loadFromDb = (resolve, reject) => {
-    Db.getTransaction('event', 'readonly').then((transaction) => {
-        let eventObjectStore = transaction.objectStore('event');
-        let events = [];
+let refreshDb = () => {
+    return new Promise((resolve, reject) => {
+        Db.getTransaction('data', 'readonly').then((transaction) => {
+            let dataObjectStore = transaction.objectStore('data');
+            let lastUpdateRequest = dataObjectStore.get('lastEventUpdate');
+            lastUpdateRequest.addEventListener('success', (event) => {
+                if (event.target.result === undefined) {
+                    loadFromApi(resolve, reject);
+                    return;
+                }
 
-        eventObjectStore.openCursor().addEventListener('success', (event) => {
-            let cursor = event.target.result;
+                let now = Math.round((new Date()).getTime() / 1000);
+                let lastUpdate = event.target.result.value;
 
-            if (! cursor) {
-                resolve(events);
-                return;
-            }
+                if (lastUpdate + CACHE_TIMEOUT < now) {
+                    loadFromApi(resolve, resolve);
+                    return;
+                }
 
-            events.push({
-                id: cursor.value.id,
-                title: cursor.value.title,
-                startsAt: cursor.value.startsAt,
-                endsAt: cursor.value.endsAt,
-                description: cursor.value.description,
-                room: cursor.value.room,
+                resolve();
             });
-            cursor.continue();
+        }).catch(() => {
+            loadFromApi(resolve, reject);
         });
-    }).catch(() => {
-        reject();
     });
 };
 
 export default {
     getEvents() {
         return new Promise((resolve, reject) => {
-            Db.getTransaction('data', 'readonly').then((transaction) => {
-                let dataObjectStore = transaction.objectStore('data');
-                let lastUpdateRequest = dataObjectStore.get('lastEventUpdate');
-                lastUpdateRequest.addEventListener('success', (event) => {
-                    if (event.target.result === undefined) {
-                        loadFromApi(resolve, reject);
-                        return;
-                    }
+            refreshDb().then(() => {
+                Db.getTransaction('event', 'readonly').then((transaction) => {
+                    let eventObjectStore = transaction.objectStore('event');
+                    let events = [];
 
-                    let now = Math.round((new Date()).getTime() / 1000);
-                    let lastUpdate = event.target.result.value;
+                    eventObjectStore.openCursor().addEventListener('success', (event) => {
+                        let cursor = event.target.result;
 
-                    if (lastUpdate + CACHE_TIMEOUT < now) {
-                        loadFromApi(resolve, () => {
-                            loadFromDb(resolve, reject);
-                        });
-                        return;
-                    }
+                        if (! cursor) {
+                            resolve(events);
+                            return;
+                        }
 
-                    loadFromDb(resolve, reject);
+                        events.push(cursor.value);
+                        cursor.continue();
+                    });
+                }).catch(() => {
+                    reject();
                 });
             }).catch(() => {
-                loadFromApi(resolve, reject);
+                reject();
+            });
+        });
+    },
+
+    getEvent(eventId) {
+        return new Promise((resolve, reject) => {
+            refreshDb().then(() => {
+                Db.getTransaction('event', 'readonly').then((transaction) => {
+                    let eventObjectStore = transaction.objectStore('event');
+                    let events = [];
+
+                    eventObjectStore.openCursor(eventId).addEventListener('success', (event) => {
+                        let cursor = event.target.result;
+
+                        if (! cursor) {
+                            reject();
+                        }
+
+                        resolve(cursor.value);
+                    });
+                }).catch(() => {
+                    reject();
+                });
+            }).catch(() => {
+                reject();
             });
         });
     },

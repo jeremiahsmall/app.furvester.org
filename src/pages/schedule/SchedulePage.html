@@ -1,7 +1,13 @@
 <v-ons-page>
-    <v-ons-navigator
-            :page-stack="pageStack"
-            @push-page="pageStack.push($event)"
-            @postpush="pushStack()"
-    ></v-ons-navigator>
+    <navbar msg="Schedule"></navbar>
+
+    <loading-indicator :is-loading="isLoading"></loading-indicator>
+
+    <v-ons-tabbar
+            swipeable position="auto"
+            :tabs="tabs"
+            :visible="showTabs"
+            :index.sync="activeIndex"
+    >
+    </v-ons-tabbar>
 </v-ons-page>
