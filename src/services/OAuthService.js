@@ -21,7 +21,7 @@ class OAuthService
 
     request(method, path, data) {
         return this._getAccessToken().then(accessToken => {
-            const now = Math.round((new Date()).getTime() / 1000) + 999999999;
+            const now = Math.round((new Date()).getTime() / 1000);
 
             if (accessToken.expiresAt <= now) {
                 return this._performRefresh().then(() => this._performRequest(method, path, data));
