@@ -2,7 +2,6 @@
 
 <script>
     import Navbar from '../../components/navbar/Navbar';
-    import Config from '../../config/Config';
 
     export default {
         name: 'info-page',
@@ -11,7 +10,7 @@
         },
         data() {
             return {
-                version: Config.VERSION,
+                version: process.env.VERSION,
             };
         },
     };

@@ -15,8 +15,6 @@ const {GenerateSW} = require('workbox-webpack-plugin');
 const loadMinified = require('./load-minified');
 
 const env = config.build.env;
-const apiUrl = 'https://furvester.org/api';
-const clientId = 'app.furvester.org';
 
 const webpackConfig = merge(baseWebpackConfig, {
     watch: process.env.WEBPACK_WATCH === 'true',
@@ -37,9 +35,6 @@ const webpackConfig = merge(baseWebpackConfig, {
         // http://vuejs.github.io/vue-loader/en/workflow/production.html
         new webpack.DefinePlugin({
             'process.env': env,
-            '__VERSION__': JSON.stringify(require('../package.json').version),
-            '__API_URL__': JSON.stringify(apiUrl),
-            '__CLIENT_ID__': JSON.stringify(clientId),
         }),
         new webpack.optimize.UglifyJsPlugin({
             compress: {

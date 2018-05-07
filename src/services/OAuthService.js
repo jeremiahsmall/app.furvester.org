@@ -1,6 +1,5 @@
 import qs from 'qs';
 import axios from 'axios';
-import Config from '../config/Config';
 import dbPromise from '../db/Db.js';
 
 class OAuthService
@@ -11,9 +10,9 @@ class OAuthService
     }
 
     authenticate(emailAddress, password) {
-        return axios.post(Config.API_URL + '/oauth', qs.stringify({
+        return axios.post(process.env.API_URL + '/oauth', qs.stringify({
             'grant_type': 'password',
-            'client_id': Config.CLIENT_ID,
+            'client_id': process.env.CLIENT_ID,
             'username': emailAddress,
             'password': password,
             'scope': 'USER',
@@ -35,7 +34,7 @@ class OAuthService
     _performRequest(method, path, data) {
         return this._getAccessToken().then(accessToken => axios.request({
             method: method,
-            url: Config.API_URL + path,
+            url: process.env.API_URL + path,
             data: qs.stringify(data),
             headers: {
                 Authorization: 'Bearer ' + accessToken.value,
@@ -55,10 +54,10 @@ class OAuthService
 
     _performRefresh() {
         return this._getRefreshToken().then(refreshToken => axios.post(
-            Config.API_URL + '/oauth',
+            process.env.API_URL + '/oauth',
             qs.stringify({
                 'grant_type': 'refresh_token',
-                'client_id': Config.CLIENT_ID,
+                'client_id': process.env.CLIENT_ID,
                 'refresh_token': refreshToken,
             })
         )).then(response => this._storeTokens(response)).catch(() => Promise.reject('authenticate'));
