@@ -7,17 +7,17 @@
         <v-ons-list-item v-for="member in team" :key="member.nickname">
             <div class="left">
                 <template v-if="null !== member.badge">
-                    <img class="list-item__thumbnail b-lazy" src="../../assets/no-badge.png" v-bind:data-src="member.badge">
+                    <img class="list-item__thumbnail" v-bind:src="member.badge" @error="this.src = '../../assets/no-badge.png';">
                 </template>
                 <template v-else>
                     <img class="list-item__thumbnail" src="../../assets/no-badge.png">
                 </template>
             </div>
             <div class="center">
-                <span class="list-item__title">{{member.nickname}}</span>
+                <span class="list-item__title">{{ member.nickname }}</span>
                 <span class="list-item__subtitle">
                      <template v-for="(department, index) in member.departments">
-                        <span>{{department}}</span><template v-if="index + 1 < member.departments.length">, </template>
+                        <span>{{ department }}</span><template v-if="index + 1 < member.departments.length">, </template>
                      </template>
                 </span>
             </div>

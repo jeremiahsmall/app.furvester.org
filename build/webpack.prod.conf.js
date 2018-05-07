@@ -11,7 +11,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin');
-const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
+const {GenerateSW} = require('workbox-webpack-plugin');
 const loadMinified = require('./load-minified');
 
 const env = config.build.env;
@@ -106,15 +106,25 @@ const webpackConfig = merge(baseWebpackConfig, {
             }
         ]),
         // service worker caching
-        new SWPrecacheWebpackPlugin({
-            cacheId: 'app.furvester.org',
-            filename: 'service-worker.js',
-            staticFileGlobs: ['dist/**/*'],
+        new GenerateSW({
+            swDest: 'service-worker.js',
+            importWorkboxFrom: 'local',
+            skipWaiting: true,
+            clientsClaim: true,
             navigateFallback: '/index.html',
-            minify: true,
-            stripPrefix: 'dist/',
-        })
-    ]
+            cacheId: 'app.furvester.org',
+            runtimeCaching: [{
+                urlPattern: new RegExp('^https://furvester\.org/api/(?:events|team|badge$)'),
+                handler: 'staleWhileRevalidate',
+                options: {
+                    cacheName: 'api-cache',
+                    expiration: {
+                        maxAgeSeconds: 60 * 60,
+                    },
+                },
+            }],
+        }),
+    ],
 });
 
 if (config.build.productionGzip) {

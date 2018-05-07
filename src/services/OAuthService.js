@@ -22,12 +22,10 @@ class OAuthService
 
     request(method, path, data) {
         return this._getAccessToken().then(accessToken => {
-            const now = Math.round((new Date()).getTime() / 1000);
+            const now = Math.round((new Date()).getTime() / 1000) + 999999999;
 
             if (accessToken.expiresAt <= now) {
-                return this._performRefresh().then(() => {
-                    return this._performRequest(method, path, data);
-                });
+                return this._performRefresh().then(() => this._performRequest(method, path, data));
             }
 
             return this._performRequest(method, path, data);
@@ -63,7 +61,7 @@ class OAuthService
                 'client_id': Config.CLIENT_ID,
                 'refresh_token': refreshToken,
             })
-        )).then(this._storeTokens).catch(() => Promise.reject('authenticate'));
+        )).then(response => this._storeTokens(response)).catch(() => Promise.reject('authenticate'));
     }
 
     _storeTokens(response) {
@@ -98,11 +96,10 @@ class OAuthService
             db => db.transaction('data', 'readonly').objectStore('data').get('accessToken')
         ).then(result => {
             if (undefined === result) {
-                return Promise.reject();
+                return Promise.reject('authenticate');
             }
 
-            this._accessToken = result.value;
-            return this._accessToken;
+            return this._accessToken = result.value;
         }).catch(() => Promise.reject('authenticate'));
     }
 
@@ -115,11 +112,10 @@ class OAuthService
             db => db.transaction('data', 'readonly').objectStore('data').get('refreshToken')
         ).then(result => {
             if (undefined === result) {
-                return Promise.reject();
+                return Promise.reject('authenticate');
             }
 
-            this._refreshToken = result.value;
-            return this._refreshToken;
+            return this._refreshToken = result.value;
         }).catch(() => Promise.reject('authenticate'));
     }
 }

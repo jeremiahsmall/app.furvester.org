@@ -1,6 +1,6 @@
 import idb from 'idb';
 
-const dbPromise = idb.open('app', 2, upgradeDb => {
+const dbPromise = idb.open('app', 3, upgradeDb => {
     switch (upgradeDb.oldVersion) {
         case 0:
             let eventObjectStore = upgradeDb.createObjectStore('event', {keyPath: 'id'});
@@ -18,6 +18,10 @@ const dbPromise = idb.open('app', 2, upgradeDb => {
             teamObjectStore.createIndex('nickname', 'nickname', {unique: false});
             teamObjectStore.createIndex('departments', 'departments', {unique: false});
             teamObjectStore.createIndex('badge', 'badge', {unique: false});
+
+        case 2:
+            upgradeDb.deleteObjectStore('event');
+            upgradeDb.deleteObjectStore('team');
     }
 });
 
