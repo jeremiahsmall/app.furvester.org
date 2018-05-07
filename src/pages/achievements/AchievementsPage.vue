@@ -39,7 +39,9 @@
                 this.isLoading = false;
 
                 if ('authenticate' === reason) {
-                    this.$router.replace({name: 'sign-in'});
+                    this.$root.$children[0].$refs.navigator.isReady().then(() => {
+                        this.$router.replace({name: 'sign-in'});
+                    });
                     return;
                 }
 

@@ -6,6 +6,7 @@ Vue.use(Vuex);
 export default new Vuex.Store({
     state: {
         menuIsOpen: false,
+        account: null,
     },
     mutations: {
         toggleMenu(state, isOpen) {
@@ -15,5 +16,8 @@ export default new Vuex.Store({
                 state.menuIsOpen = ! state.menuIsOpen;
             }
         },
+        updateAccount(state, account) {
+            state.account = account;
+        }
     },
 });

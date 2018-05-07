@@ -2,6 +2,7 @@
 <template src="./App.html"></template>
 
 <script>
+    import OAuthService from './services/OAuthService';
     import store from './store';
 
     let transitionRunning = false;
@@ -18,57 +19,49 @@
                     store.commit('toggleMenu', isOpen);
                 },
             },
+            account: {
+                get() {
+                    return store.state.account;
+                },
+            },
         },
         data() {
             return {
                 pageStack: [],
-                categories: [
+                mainPages: [
                     {
-                        label: null,
-                        pages: [
-                            {
-                                target: 'schedule',
-                                label: 'Schedule',
-                                icon: 'fa-calendar'
-                            },
-                            {
-                                target: 'map',
-                                label: 'Map',
-                                icon: 'fa-map'
-                            },
-                            {
-                                target: 'team',
-                                label: 'Team',
-                                icon: 'fa-users'
-                            },
-                            {
-                                target: 'about',
-                                label: 'About',
-                                icon: 'fa-info-circle'
-                            },
-                            {
-                                target: 'achievements',
-                                label: 'Achievements',
-                                icon: 'fa-trophy'
-                            },
-                        ],
+                        route: 'schedule',
+                        label: 'Schedule',
+                        icon: 'fa-calendar'
                     },
                     {
-                        label: 'Links',
-                        pages: [
-                            {
-                                target: 'https://furvester.org',
-                                label: 'Website',
-                                icon: 'fa-link'
-                            },
-                            {
-                                target: 'https://twitter.com/furvester',
-                                label: 'Twitter',
-                                icon: 'fa-twitter'
-                            },
-                        ],
-                    }
-                ]
+                        route: 'map',
+                        label: 'Map',
+                        icon: 'fa-map'
+                    },
+                    {
+                        route: 'team',
+                        label: 'Team',
+                        icon: 'fa-users'
+                    },
+                    {
+                        route: 'about',
+                        label: 'About',
+                        icon: 'fa-info-circle'
+                    },
+                ],
+                links: [
+                    {
+                        url: 'https://furvester.org',
+                        label: 'Website',
+                        icon: 'fa-link'
+                    },
+                    {
+                        url: 'https://twitter.com/furvester',
+                        label: 'Twitter',
+                        icon: 'fa-twitter'
+                    },
+                ],
             };
         },
         created() {
@@ -91,6 +84,8 @@
                 mapRouteStack(to);
                 next();
             });
+
+            OAuthService.getAccount().then(account => store.commit('updateAccount', account)).catch(() => {});
         },
         methods: {
             goTo(target) {
@@ -110,6 +105,13 @@
             },
             goBack() {
                 this.$router.go(-1);
+            },
+            signOut() {
+                OAuthService.forget().then(() => {
+                    store.commit('updateAccount', null);
+                    store.commit('toggleMenu', false);
+                    this.$router.replace('home');
+                });
             },
         },
     };

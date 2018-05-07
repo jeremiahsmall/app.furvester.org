@@ -7,24 +7,41 @@
                 </div>
 
                 <v-ons-list>
-                    <template v-for="category in categories">
-                        <template v-if="null !== category.label">
-                            <v-ons-list-header>{{ category.label }}</v-ons-list-header>
-                        </template>
+                    <v-ons-list-item modifier="chevron" v-for="page in mainPages" @click="goTo(page.route)" :key="page.route">
+                        <div class="left">
+                            <v-ons-icon fixed-width :icon="page.icon"></v-ons-icon>
+                        </div>
+                        <div class="center">{{ page.label }}</div>
+                    </v-ons-list-item>
 
-                        <v-ons-list-item modifier="chevron" v-for="page in category.pages" @click="goTo(page.target)" :key="page.target">
-                            <div class="left">
-                                <v-ons-icon fixed-width :icon="page.icon"></v-ons-icon>
-                            </div>
-                            <div class="center">{{ page.label }}</div>
-                        </v-ons-list-item>
-                    </template>
+                    <v-ons-list-header>Personal</v-ons-list-header>
+                    <v-ons-list-item modifier="chevron" @click="goTo('sign-in')" v-if="! account">
+                        <div class="left"><v-ons-icon fixed-width icon="fa-sign-in"></v-ons-icon></div>
+                        <div class="center">Sign in</div>
+                    </v-ons-list-item>
+                    <v-ons-list-item modifier="chevron" @click="signOut" v-if="account">
+                        <div class="left"><v-ons-icon fixed-width icon="fa-sign-out"></v-ons-icon></div>
+                        <div class="center">Sign out</div>
+                    </v-ons-list-item>
+                    <v-ons-list-item modifier="chevron" @click="goTo('achievements')">
+                        <div class="left"><v-ons-icon fixed-width icon="fa-trophy"></v-ons-icon></div>
+                        <div class="center">Achievements</div>
+                    </v-ons-list-item>
+
+                    <v-ons-list-header>Links</v-ons-list-header>
+                    <v-ons-list-item modifier="chevron" v-for="link in links" @click="goTo(link.url)" :key="link.url">
+                        <div class="left">
+                            <v-ons-icon fixed-width :icon="link.icon"></v-ons-icon>
+                        </div>
+                        <div class="center">{{ link.label }}</div>
+                    </v-ons-list-item>
                 </v-ons-list>
             </v-ons-page>
         </v-ons-splitter-side>
 
         <v-ons-splitter-content>
             <v-ons-navigator
+                ref="navigator"
                 :page-stack="pageStack"
                 :pop-page="goBack"
                 @prepush="transitionRunning()"

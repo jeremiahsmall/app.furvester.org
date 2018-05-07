@@ -7,6 +7,7 @@ class OAuthService
     constructor() {
         this._accessToken = null;
         this._refreshToken = null;
+        this._account = null;
     }
 
     authenticate(emailAddress, password) {
@@ -16,7 +17,45 @@ class OAuthService
             'username': emailAddress,
             'password': password,
             'scope': 'USER',
-        })).then(this._storeTokens.bind(this));
+        })).then(
+            response => this._storeTokens(response)
+        ).then(
+            () => this.request('GET', '/account')
+        ).then(
+            response => this._storeAccount(response)
+        ).then(() => this._account);
+    }
+
+    forget() {
+        return dbPromise.then(db => {
+            const transaction = db.transaction('data', 'readwrite');
+            const dataObjectStore = transaction.objectStore('data');
+            dataObjectStore.delete('accessToken');
+            dataObjectStore.delete('refreshToken');
+            dataObjectStore.delete('account');
+
+            return transaction.complete;
+        }).then(() => {
+            this._accessToken = null;
+            this._refreshToken = null;
+            this._account = null;
+        });
+    }
+
+    getAccount() {
+        if (null !== this._account) {
+            return Promise.resolve(this._account);
+        }
+
+        return dbPromise.then(
+            db => db.transaction('data', 'readonly').objectStore('data').get('account')
+        ).then(result => {
+            if (undefined === result) {
+                return Promise.reject();
+            }
+
+            return this._account = result.value;
+        });
     }
 
     request(method, path, data) {
@@ -80,6 +119,21 @@ class OAuthService
             dataObjectStore.put({
                 key: 'refreshToken',
                 value: this._refreshToken,
+            });
+
+            return transaction.complete;
+        });
+    }
+
+    _storeAccount(response) {
+        this._account = response.data;
+
+        return dbPromise.then(db => {
+            const transaction = db.transaction('data', 'readwrite');
+            const dataObjectStore = transaction.objectStore('data');
+            dataObjectStore.put({
+                key: 'account',
+                value: this._account,
             });
 
             return transaction.complete;
