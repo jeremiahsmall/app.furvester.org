@@ -1,6 +1,4 @@
-<template src="./AchievementsPage.html">
-    <div></div>
-</template>
+<template src="./AchievementsPage.html"></template>
 
 <script>
     import Navbar from '../../components/navbar/Navbar';
@@ -23,7 +21,7 @@
         mounted() {
             this.isLoading = true;
 
-            OAuthService.request('GET', '/achievements').then((response) => {
+            OAuthService.request('GET', '/achievements').then(response => {
                 this.isLoading = false;
                 this.achievements = response.data.achievements.sort((a, b) => {
                     let dateA = this.$moment(a.assignedAt).unix();
@@ -37,7 +35,7 @@
                         return 1;
                     }
                 });
-            }).catch((reason) => {
+            }).catch(reason => {
                 this.isLoading = false;
 
                 if ('authenticate' === reason) {
@@ -45,24 +43,25 @@
                     return;
                 }
 
-                this.$ons.notification.alert('An error occured when loading your achievements.');
+                this.$ons.notification.alert('An error occurred when loading your achievements.');
             });
         },
         methods: {
             submitCode() {
                 this.isLoading = true;
 
-                OAuthService.request('POST', '/achievements/claim', {code: this.code}).then((response) => {
+                OAuthService.request('POST', '/achievements/claim', {code: this.code}).then(response => {
                     this.isLoading = false;
-                    this.achievements.shift(response.data);
-                }).catch((reason) => {
+                    this.code = null;
+                    this.achievements.unshift(response.data);
+                }).catch(reason => {
                     this.isLoading = false;
 
                     if ('authenticate' === reason) {
                         this.$router.replace({name: 'sign-in'});
                         return;
                     } else if ('unknown' === reason) {
-                        this.$ons.notification.alert('An unknown error occured.');
+                        this.$ons.notification.alert('An unknown error occurred.');
                         return;
                     }
 

@@ -1,6 +1,4 @@
-<template src="./TeamPage.html">
-    <div></div>
-</template>
+<template src="./TeamPage.html"></template>
 
 <script>
     import Navbar from '../../components/navbar/Navbar';
@@ -23,10 +21,8 @@
         mounted() {
             this.isLoading = true;
 
-            TeamService.getTeam().then((team) => {
-                team.sort((a, b) => {
-                    return a.nickname.localeCompare(b.nickname);
-                });
+            TeamService.getTeam().then(team => {
+                team.sort((a, b) => a.nickname.localeCompare(b.nickname));
 
                 this.team = team;
                 this.isLoading = false;

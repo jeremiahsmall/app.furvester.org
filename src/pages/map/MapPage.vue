@@ -1,7 +1,4 @@
-<style lang="css" scoped src="./MapPage.css"></style>
-<template src="./MapPage.html">
-    <div></div>
-</template>
+<template src="./MapPage.html"></template>
 
 <script>
     import Navbar from '../../components/navbar/Navbar';

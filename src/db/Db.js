@@ -1,57 +1,24 @@
-let db = null;
-let getDb = () => {
-    return new Promise((resolve, reject) => {
-        if (null !== db) {
-            resolve(db);
-        }
+import idb from 'idb';
 
-        let dbOpenRequest = window.indexedDB.open('app', 2);
+const dbPromise = idb.open('app', 2, upgradeDb => {
+    switch (upgradeDb.oldVersion) {
+        case 0:
+            let eventObjectStore = upgradeDb.createObjectStore('event', {keyPath: 'id'});
+            eventObjectStore.createIndex('title', 'title', {unique: false});
+            eventObjectStore.createIndex('startsAt', 'startsAt', {unique: false});
+            eventObjectStore.createIndex('endsAt', 'endsAt', {unique: false});
+            eventObjectStore.createIndex('description', 'description', {unique: false});
+            eventObjectStore.createIndex('room', 'room', {unique: false});
 
-        dbOpenRequest.addEventListener('error', () => {
-            reject();
-        });
+            let dataObjectStore = upgradeDb.createObjectStore('data', {keyPath: 'key'});
+            dataObjectStore.createIndex('value', 'value', {unique: false});;
 
-        dbOpenRequest.addEventListener('upgradeneeded', (event) => {
-            let db = dbOpenRequest.result;
-            db.addEventListener('error', () => {
-                reject();
-            });
-
-            if (event.oldVersion < 1) {
-                let eventObjectStore = db.createObjectStore('event', {keyPath: 'id'});
-                eventObjectStore.createIndex('title', 'title', {unique: false});
-                eventObjectStore.createIndex('startsAt', 'startsAt', {unique: false});
-                eventObjectStore.createIndex('endsAt', 'endsAt', {unique: false});
-                eventObjectStore.createIndex('description', 'description', {unique: false});
-                eventObjectStore.createIndex('room', 'room', {unique: false});
-
-                let dataObjectStore = db.createObjectStore('data', {keyPath: 'key'});
-                dataObjectStore.createIndex('value', 'value', {unique: false});
-            }
-
-            if (event.oldVersion < 2) {
-                let teamObjectStore = db.createObjectStore('team', {keyPath: 'id'});
-                teamObjectStore.createIndex('nickname', 'nickname', {unique: false});
-                teamObjectStore.createIndex('departments', 'departments', {unique: false});
-                teamObjectStore.createIndex('badge', 'badge', {unique: false});
-            }
-        });
-
-        dbOpenRequest.addEventListener('success', () => {
-            db = dbOpenRequest.result;
-            resolve(db);
-        });
-    });
-};
-
-export default {
-    getTransaction(storeNames, mode) {
-        return new Promise((resolve, reject) => {
-            getDb().then((db) => {
-                resolve(db.transaction(storeNames, mode));
-            }).catch(() => {
-                reject();
-            });
-        });
+        case 1:
+            let teamObjectStore = upgradeDb.createObjectStore('team', {keyPath: 'id'});
+            teamObjectStore.createIndex('nickname', 'nickname', {unique: false});
+            teamObjectStore.createIndex('departments', 'departments', {unique: false});
+            teamObjectStore.createIndex('badge', 'badge', {unique: false});
     }
-};
+});
+
+export default dbPromise;

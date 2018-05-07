@@ -57,9 +57,9 @@
         },
         methods: {
             share() {
-                let a = document.createElement('a');
+                const a = document.createElement('a');
                 a.href = this.$router.resolve({name: 'event', params: {eventId: this.event.id}}).href;
-                let url = a.protocol + '//' + a.host + a.pathname;
+                const url = a.protocol + '//' + a.host + a.pathname;
 
                 navigator.share({
                     title: this.event.title,

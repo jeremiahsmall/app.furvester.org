@@ -75,7 +75,7 @@
             const mapRouteStack = route => this.pageStack = route.matched.map(m => m.components.default);
 
             if ('event' === this.$route.name) {
-                let eventId = this.$route.params.eventId;
+                const eventId = this.$route.params.eventId;
                 this.$router.replace({name: 'schedule'});
                 this.$router.push({name: 'event', params: {'eventId': eventId}});
             }

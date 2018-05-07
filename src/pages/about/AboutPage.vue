@@ -1,6 +1,4 @@
-<template src="./AboutPage.html">
-    <div></div>
-</template>
+<template src="./AboutPage.html"></template>
 
 <script>
     import Navbar from '../../components/navbar/Navbar';

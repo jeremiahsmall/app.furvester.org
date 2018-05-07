@@ -1,7 +1,7 @@
 import qs from 'qs';
 import axios from 'axios';
 import Config from '../config/Config';
-import Db from "../db/Db";
+import dbPromise from '../db/Db.js';
 
 class OAuthService
 {
@@ -11,187 +11,116 @@ class OAuthService
     }
 
     authenticate(emailAddress, password) {
-        return new Promise((resolve, reject) => {
-            axios.post(Config.API_URL + '/oauth', qs.stringify({
-                'grant_type': 'password',
-                'client_id': Config.CLIENT_ID,
-                'username': emailAddress,
-                'password': password,
-                'scope': 'USER',
-            })).then((response) => {
-                this._storeTokens(response).then(() => {
-                    resolve();
-                }).catch(() => {
-                    reject();
-                });
-            }).catch(() => {
-                reject();
-            });
-        });
+        return axios.post(Config.API_URL + '/oauth', qs.stringify({
+            'grant_type': 'password',
+            'client_id': Config.CLIENT_ID,
+            'username': emailAddress,
+            'password': password,
+            'scope': 'USER',
+        })).then(this._storeTokens.bind(this));
     }
 
     request(method, path, data) {
-        return new Promise((resolve, reject) => {
-            this._getAccessToken().then((accessToken) => {
-                let now = Math.round((new Date()).getTime() / 1000);
-                let expiresAt = accessToken.expiresAt;
+        return this._getAccessToken().then(accessToken => {
+            const now = Math.round((new Date()).getTime() / 1000);
 
-                if (expiresAt <= now) {
-                    this._performRefresh().then(() => {
-                        this._performRequest(method, path, data).then((response) => {
-                            resolve(response);
-                        }).catch((reason) => {
-                            reject(reason);
-                        });
-                    }).catch(() => {
-                        reject('authenticate');
-                    });
-                    return;
-                }
-
-                this._performRequest(method, path, data).then((response) => {
-                    resolve(response);
-                }).catch((reason) => {
-                    reject(reason);
+            if (accessToken.expiresAt <= now) {
+                return this._performRefresh().then(() => {
+                    return this._performRequest(method, path, data);
                 });
-            }).catch(() => {
-                reject('authenticate');
-            });
+            }
+
+            return this._performRequest(method, path, data);
         });
     }
 
     _performRequest(method, path, data) {
-        return new Promise((resolve, reject) => {
-            this._getAccessToken().then((accessToken) => {
-                axios.request({
-                    method: method,
-                    url: Config.API_URL + path,
-                    data: qs.stringify(data),
-                    headers: {
-                        Authorization: 'Bearer ' + accessToken.value,
-                    },
-                }).then((response) => {
-                    resolve(response);
-                }).catch((error) => {
-                    if (! error.response) {
-                        reject('unknown');
-                        return;
-                    }
+        return this._getAccessToken().then(accessToken => axios.request({
+            method: method,
+            url: Config.API_URL + path,
+            data: qs.stringify(data),
+            headers: {
+                Authorization: 'Bearer ' + accessToken.value,
+            }
+        })).catch(error => {
+            if (! error.response) {
+                return Promise.reject('unknown');
+            }
 
-                    if (401 !== error.response.status) {
-                        reject(error.response);
-                        return;
-                    }
+            if (401 !== error.response.status) {
+                return Promise.reject(error.response);
+            }
 
-                    this._performRefresh().then(() => {
-                        this._performRequest(method, path, data);
-                    }).catch(() => {
-                        reject('authenticate');
-                    });
-                });
-            }).catch(() => {
-                reject('authenticate');
-            });
+            return this._performRefresh().then(() => this.performRequest(method, path, data));
         });
     }
 
     _performRefresh() {
-        return new Promise((resolve, reject) => {
-            this._getRefreshToken().then((refreshToken) => {
-                axios.post(Config.API_URL + '/oauth', qs.stringify({
-                    'grant_type': 'refresh_token',
-                    'client_id': Config.CLIENT_ID,
-                    'refresh_token': refreshToken,
-                })).then((response) => {
-                    this._storeTokens(response).then(() => {
-                        resolve();
-                    }).catch(() => {
-                        reject();
-                    });
-                }).catch(() => {
-                    reject();
-                });
-            }).catch(() => {
-                reject();
-            });
-        });
+        return this._getRefreshToken().then(refreshToken => axios.post(
+            Config.API_URL + '/oauth',
+            qs.stringify({
+                'grant_type': 'refresh_token',
+                'client_id': Config.CLIENT_ID,
+                'refresh_token': refreshToken,
+            })
+        )).then(this._storeTokens).catch(() => Promise.reject('authenticate'));
     }
 
     _storeTokens(response) {
-        return new Promise((resolve, reject) => {
-            this._accessToken = {
-                value: response.data.access_token,
-                expiresAt: Math.round((new Date()).getTime() / 1000) + response.data.expires_in,
-            };
-            this._refreshToken = response.data.refresh_token;
+        this._accessToken = {
+            value: response.data.access_token,
+            expiresAt: Math.round((new Date()).getTime() / 1000) + response.data.expires_in,
+        };
+        this._refreshToken = response.data.refresh_token;
 
-            Db.getTransaction('data', 'readwrite').then((transaction) => {
-                let dataObjectStore = transaction.objectStore('data');
-                dataObjectStore.put({
-                    key: 'accessToken',
-                    value: this._accessToken,
-                });
-                dataObjectStore.put({
-                    key: 'refreshToken',
-                    value: this._refreshToken,
-                });
-
-                transaction.addEventListener('complete', () => {
-                    resolve();
-                });
-            }).catch(() => {
-                reject();
+        return dbPromise.then(db => {
+            const transaction = db.transaction('data', 'readwrite');
+            const dataObjectStore = transaction.objectStore('data');
+            dataObjectStore.put({
+                key: 'accessToken',
+                value: this._accessToken,
             });
+            dataObjectStore.put({
+                key: 'refreshToken',
+                value: this._refreshToken,
+            });
+
+            return transaction.complete;
         });
     }
 
     _getAccessToken() {
-        return new Promise((resolve, reject) => {
-            if (null !== this._accessToken) {
-                resolve(this._accessToken);
-                return;
+        if (null !== this._accessToken) {
+            return Promise.resolve(this._accessToken);
+        }
+
+        return dbPromise.then(
+            db => db.transaction('data', 'readonly').objectStore('data').get('accessToken')
+        ).then(result => {
+            if (undefined === result) {
+                return Promise.reject();
             }
 
-            Db.getTransaction('data', 'readonly').then((transaction) => {
-                let dataObjectStore = transaction.objectStore('data');
-                let accessTokenRequest = dataObjectStore.get('accessToken');
-                accessTokenRequest.addEventListener('success', (event) => {
-                    if (event.target.result === undefined) {
-                        reject();
-                        return;
-                    }
-
-                    this._accessToken = event.target.result.value;
-                    resolve(this._accessToken);
-                });
-            }).catch(() => {
-                reject();
-            });
-        });
+            this._accessToken = result.value;
+            return this._accessToken;
+        }).catch(() => Promise.reject('authenticate'));
     }
 
     _getRefreshToken() {
-        return new Promise((resolve, reject) => {
-            if (null !== this._refreshToken) {
-                resolve(this._refreshToken);
-                return;
+        if (null !== this._refreshToken) {
+            return Promise.resolve(this._refreshToken);
+        }
+
+        return dbPromise.then(
+            db => db.transaction('data', 'readonly').objectStore('data').get('refreshToken')
+        ).then(result => {
+            if (undefined === result) {
+                return Promise.reject();
             }
 
-            Db.getTransaction('data', 'readonly').then((transaction) => {
-                let dataObjectStore = transaction.objectStore('data');
-                let refreshTokenRequest = dataObjectStore.get('refreshToken');
-                refreshTokenRequest.addEventListener('success', (event) => {
-                    if (event.target.result === undefined) {
-                        reject();
-                    }
-
-                    this._refreshToken = event.target.result.value;
-                    resolve(this._refreshToken);
-                });
-            }).catch(() => {
-                reject();
-            });
-        });
+            this._refreshToken = result.value;
+            return this._refreshToken;
+        }).catch(() => Promise.reject('authenticate'));
     }
 }
 

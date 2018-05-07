@@ -1,6 +1,4 @@
-<template src="./SchedulePage.html">
-    <div></div>
-</template>
+<template src="./SchedulePage.html"></template>
 
 <script>
     import Navbar from '../../components/navbar/Navbar';
@@ -30,11 +28,11 @@
         mounted() {
             this.isLoading = true;
 
-            EventService.getEvents().then((events) => {
-                let indexedEvents = {};
-                let dates = {};
+            EventService.getEvents().then(events => {
+                const indexedEvents = {};
+                const dates = {};
 
-                events.forEach((event) => {
+                events.forEach(event => {
                     let moment = this.$moment(event.startsAt);
                     let index = moment.format('YYYY-MM-DD');
                     let date = moment.format('D MMM');
@@ -54,19 +52,10 @@
                 }, {});
 
                 let isFirst = true;
-                Object.keys(sortedDates).forEach((index) => {
-                    indexedEvents[index] = indexedEvents[index].sort((a, b) => {
-                        let dateA = this.$moment(a.startsAt).unix();
-                        let dateB = this.$moment(b.startsAt).unix();
-
-                        if (dateA === dateB) {
-                            return 0;
-                        } else if (dateA > dateB) {
-                            return 1;
-                        } else {
-                            return -1;
-                        }
-                    });
+                Object.keys(sortedDates).forEach(index => {
+                    indexedEvents[index] = indexedEvents[index].sort(
+                        (a, b) => this.$moment(a.startsAt).unix() - this.$moment(b.startsAt).unix()
+                    );
 
                     this.tabs.push({
                         label: sortedDates[index],

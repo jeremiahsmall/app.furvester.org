@@ -1,7 +1,5 @@
 <style lang="css" scoped src="./HomePage.css"></style>
-<template src="./HomePage.html">
-    <div></div>
-</template>
+<template src="./HomePage.html"></template>
 
 <script>
     import Navbar from '../../components/navbar/Navbar';

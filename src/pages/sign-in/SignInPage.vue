@@ -1,6 +1,4 @@
-<template src="./SignInPage.html">
-    <div></div>
-</template>
+<template src="./SignInPage.html"></template>
 
 <script>
     import Navbar from '../../components/navbar/Navbar';
