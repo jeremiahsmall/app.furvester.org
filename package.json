@@ -2,7 +2,10 @@
   "name": "app.furvester.org",
   "version": "1.6.0",
   "description": "Furvester mobile app",
+  "license": "BSD-3-Clause",
   "author": "Ben Scholzen <mail@dasprids.de>",
+  "homepage": "https://github.com/Furvester/app.furvester.org",
+  "bugs": "https://github.com/Furvester/app.furvester.org/issues",
   "private": true,
   "scripts": {
     "dev": "node build/dev-server.js",
