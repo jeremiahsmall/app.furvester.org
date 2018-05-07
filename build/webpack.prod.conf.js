@@ -114,14 +114,8 @@ const webpackConfig = merge(baseWebpackConfig, {
             navigateFallback: '/index.html',
             cacheId: 'app.furvester.org',
             runtimeCaching: [{
-                urlPattern: new RegExp('^https://furvester\.org/api/(?:events|team|badge$)'),
+                urlPattern: new RegExp('^https://furvester\\.org/api/(?:events|team|badge)'),
                 handler: 'staleWhileRevalidate',
-                options: {
-                    cacheName: 'api-cache',
-                    expiration: {
-                        maxAgeSeconds: 60 * 60,
-                    },
-                },
             }],
         }),
     ],
