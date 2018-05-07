@@ -11,9 +11,11 @@
         </v-ons-list-item>
     </v-ons-list>
 
-    <p style="text-align: center;">
-        Version {{ version }}
-    </p>
+    <v-ons-list-title>Version {{ version }}</v-ons-list-title>
+    <v-ons-list>
+        <v-ons-list-item modifier="chevron" @click="viewSource()">View source</v-ons-list-item>
+        <v-ons-list-item modifier="chevron" @click="reportABug()">Report a bug</v-ons-list-item>
+    </v-ons-list>
 
     <v-ons-list-title>Made with</v-ons-list-title>
     <v-ons-list>

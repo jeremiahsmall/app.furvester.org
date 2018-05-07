@@ -4,7 +4,7 @@
     import Navbar from '../../components/navbar/Navbar';
 
     export default {
-        name: 'info-page',
+        name: 'about-page',
         components: {
             Navbar,
         },
@@ -12,6 +12,14 @@
             return {
                 version: process.env.VERSION,
             };
+        },
+        methods: {
+            viewSource() {
+                window.open('https://github.com/Furvester/app.furvester.org');
+            },
+            reportABug() {
+                window.open('https://github.com/Furvester/app.furvester.org/issues/new');
+            },
         },
     };
 </script>
