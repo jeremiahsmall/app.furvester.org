@@ -19,6 +19,13 @@
                         <div class="left"><v-ons-icon fixed-width icon="fa-sign-in"></v-ons-icon></div>
                         <div class="center">Sign in</div>
                     </v-ons-list-item>
+                    <v-ons-list-item v-if="account">
+                        <div class="left">
+                            <img v-if="null !== account.badge" class="list-item__thumbnail" v-bind:src="account.badge" v-img-fallback="require('./assets/no-badge.png')">
+                            <img v-else class="list-item__thumbnail" src="assets/no-badge.png">
+                        </div>
+                        <div class="center">{{ account.nickname }}</div>
+                    </v-ons-list-item>
                     <v-ons-list-item modifier="chevron" @click="signOut" v-if="account">
                         <div class="left"><v-ons-icon fixed-width icon="fa-sign-out"></v-ons-icon></div>
                         <div class="center">Sign out</div>

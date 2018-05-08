@@ -10,11 +10,13 @@ import moment from 'moment-timezone';
 import * as VOns from './vue-onsen-components';
 import App from './App';
 import routes from './routes';
+import VImgFallback from 'v-img-fallback';
 
 Vue.config.productionTip = false;
 
 Vue.use(VueOnsen);
 Vue.use(VueRouter);
+Vue.use(VImgFallback, {});
 Object.values(VOns).forEach(comp => Vue.component(comp.name, comp));
 
 moment.tz.setDefault('Europe/Berlin');
