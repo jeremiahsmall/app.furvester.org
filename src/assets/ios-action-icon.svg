@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" width="50.666664" height="70.666138" viewBox="0 0 50.666664 70.666137" version="1.1" id="svg1158" inkscape:version="0.92.3 (unknown)" sodipodi:docname="ios-action-icon.svg">
+    <defs id="defs1152">
+        <clipPath clipPathUnits="userSpaceOnUse" id="clipPath294">
+            <path d="m 119,164 h 56 v -64 h -56 z" id="path292" inkscape:connector-curvature="0" />
+        </clipPath>
+    </defs>
+    <sodipodi:namedview id="base" pagecolor="#ffffff" bordercolor="#666666" borderopacity="1.0" inkscape:pageopacity="0.0" inkscape:pageshadow="2" inkscape:zoom="5.6" inkscape:cx="30.64917" inkscape:cy="-9.5833594" inkscape:document-units="px" inkscape:current-layer="layer1" showgrid="false" fit-margin-top="0" fit-margin-left="0" fit-margin-right="0" fit-margin-bottom="0" />
+    <metadata id="metadata1155">
+        <rdf:RDF>
+            <cc:Work rdf:about="">
+                <dc:format>image/svg+xml</dc:format>
+                <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+                <dc:title></dc:title>
+            </cc:Work>
+        </rdf:RDF>
+    </metadata>
+    <g inkscape:label="Layer 1" inkscape:groupmode="layer" id="layer1" transform="translate(285.33334,111.23756)">
+        <g id="g302" transform="matrix(1.3333333,0,0,-1.3333333,-253.33334,-91.238094)">
+            <path d="m 0,0 v -2 h 12 v -34 h -34 v 34 h 12 V 0 H -24 V -38 H 14 V 0 Z" style="fill:#007aff;fill-opacity:1;fill-rule:nonzero;stroke:none" id="path304" inkscape:connector-curvature="0" />
+        </g>
+        <g id="g306" transform="matrix(1.3333333,0,0,-1.3333333,-261.33334,-106.23223)">
+            <path d="M 0,0 V -30.246 H 2 V 0 l 6.512,-6.15 1.488,1.404 -9,8.5 -9,-8.5 1.488,-1.404 z" style="fill:#007aff;fill-opacity:1;fill-rule:nonzero;stroke:none" id="path308" inkscape:connector-curvature="0" />
+        </g>
+    </g>
+</svg>

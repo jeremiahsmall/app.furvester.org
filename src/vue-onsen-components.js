@@ -12,7 +12,7 @@ export { default as VOnsCard } from 'vue-onsenui/esm/components/VOnsCard';
 // export { default as VOnsCarouselItem } from 'vue-onsenui/esm/components/VOnsCarouselItem';
 // export { default as VOnsCheckbox } from 'vue-onsenui/esm/components/VOnsCheckbox';
 // export { default as VOnsCol } from 'vue-onsenui/esm/components/VOnsCol';
-// export { default as VOnsDialog } from 'vue-onsenui/esm/components/VOnsDialog';
+export { default as VOnsDialog } from 'vue-onsenui/esm/components/VOnsDialog';
 // export { default as VOnsFab } from 'vue-onsenui/esm/components/VOnsFab';
 export { default as VOnsIcon } from 'vue-onsenui/esm/components/VOnsIcon';
 export { default as VOnsInput } from 'vue-onsenui/esm/components/VOnsInput';

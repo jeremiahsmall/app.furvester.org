@@ -13,4 +13,17 @@
             </p>
         </div>
     </div>
+
+    <v-ons-dialog :visible.sync="showPrompt">
+        <div style="padding: 0 14px 14px 14px; text-align: center;">
+            <p>
+                Install this application on your home screen for quick and easy access when you're on the go.
+            </p>
+            <p>
+                Just tap <img src="../../assets/ios-action-icon.svg" height="30"> then 'Add to Home Screen'
+            </p>
+
+            <v-ons-button @click="dismissPrompt()">Dismiss</v-ons-button>
+        </div>
+    </v-ons-dialog>
 </v-ons-page>
